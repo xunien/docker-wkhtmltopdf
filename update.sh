@@ -34,11 +34,8 @@ for version in \
   ; do
 
     # Supported base images
-    for image in \
-      alpine:3.16.2 \
-      node:18.12.0-alpine3.16 \
-      python:3.11.0-alpine3.16 \
-    ; do
+    for image in alpine:3.16.2
+    do
       # Parse image string
       base="${image%%:*}"
       baseVersion="${image##*:}"
@@ -68,7 +65,7 @@ for version in \
           replaceRules+="
             s/%%IMAGE%%/$image/g;
             s/%%WKHTMLTOXVERSION%%/$version/g;
-            s/%%END%%/ENTRYPOINT [\"wkhtmltopdf\"]/g;
+            s/%%END%%/ENTRYPOINT [\"/bin/sh\"]/g;
           "
         ;;
         *alpine*)
@@ -125,10 +122,10 @@ for version in \
       sed -i.bak -e "$replaceRules" "$dir/$file"
 
       # Build container
-      echo "Starting build for surnet/$imageName:$tag"
-      docker buildx build . -f "$dir/$file" -t "surnet/$imageName:$tag" --platform linux/amd64,linux/arm64 --push \
-      && docker buildx build . -f "$dir/$file" -t "ghcr.io/surnet/$imageName:$tag" --platform linux/amd64,linux/arm64 --push \
-      && echo "Successfully built and pushed surnet/$imageName:$tag" || echo "Building or pushing failed for surnet/$imageName:$tag"
+      echo "Starting build for xunien/$imageName:$tag"
+      docker buildx build . -f "$dir/$file" -t "xunien/$imageName:$tag" --platform linux/amd64,linux/arm64 --push \
+      && docker buildx build . -f "$dir/$file" -t "ghcr.io/xunien/$imageName:$tag" --platform linux/amd64,linux/arm64 --push \
+      && echo "Successfully built and pushed xunien/$imageName:$tag" || echo "Building or pushing failed for xunien/$imageName:$tag"
 
     done
 
